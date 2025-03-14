@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = 'stylesheet' href = "{{ url_for('static', filename='styles.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    <div class = "container">
+        <h2> Predict Food Expenditure</h2>
+        <h4>Please enter your income</h4>
+        <form action="/foodexp_pred" method="POST">
+            <input type="number" name="q" step = 0.01><br><br>
+            <br>
+            <input type="submit" value="Enter">
+        </form>
+        <br>
+        <form action = '/main' method=  "POST">
+            <input type = "submit" value = "Main">
+        </form>
+    </div>
+</body>
+</html>
