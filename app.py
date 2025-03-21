@@ -1,8 +1,13 @@
 from flask import Flask, render_template, request
 import sqlite3
 import datetime
+import google.generativeai as genai
+import markdown
+import re
 
 app = Flask(__name__)
+flag = True
+api = "AIzaSyCCXOIplLPvb7lvtigD68LNXgRdKUXXjso"
 
 @app.route("/", methods = ['POST','GET'])
 def index():
@@ -10,14 +15,17 @@ def index():
 
 @app.route("/main", methods = ['POST','GET'])
 def main():
-    t = datetime.datetime.now()
-    user_name= request.form.get("q")
-    conn = sqlite3.connect('userdb.db')
-    c= conn.cursor()
-    conn.execute("insert into user (name,timestamp) values (?,?)",(user_name,t))
-    conn.commit()
-    c.close()
-    conn.close
+    global flag
+    if flag:
+        t = datetime.datetime.now()
+        user_name= request.form.get("q")
+        conn = sqlite3.connect('userdb.db')
+        c= conn.cursor()
+        conn.execute("insert into user (name,timestamp) values (?,?)",(user_name,t))
+        conn.commit()
+        c.close()
+        conn.close
+        flag = False
     return(render_template("main.html"))
 
 @app.route("/foodexp", methods = ['POST','GET'])
@@ -32,6 +40,20 @@ def foodexp_pred():
 @app.route("/ethical_test", methods = ['POST','GET'])
 def ethical_test():
     return(render_template("ethical_test.html"))
+
+@app.route("/FAQ", methods = ['POST','GET'])
+def faq():
+    return(render_template("FAQ.html"))
+
+@app.route("/FAQ1", methods = ['POST','GET'])
+def faq1():
+    ques = request.form.get("response")
+    genai.configure(api_key= api)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    answer= model.generate_content("Factors for profit")
+    answer = markdown.markdown(answer.text)
+    answer = re.sub(r'<.*?>', '', answer)
+    return(render_template("FAQ1.html", answer = answer))
 
 @app.route("/test_result", methods = ['POST','GET'])
 def test_result():
