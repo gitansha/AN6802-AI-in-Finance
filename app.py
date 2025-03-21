@@ -10,7 +10,7 @@ def index():
 
 @app.route("/main", methods = ['POST','GET'])
 def main():
-    t = time
+    t = datetime.datetime.now()
     user_name= request.form.get("q")
     conn = sqlite3.connect('userdb.db')
     c= conn.cursor()
@@ -43,11 +43,26 @@ def test_result():
     
 @app.route("/userLog", methods = ['POST','GET'])
 def userLog():
-    answer= request.form.get("answer")
-    if answer == "false":
-        return(render_template("pass.html"))
-    elif answer == "true":
-        return(render_template("fail.html"))
+    conn = sqlite3.connect('userdb.db')
+    c= conn.cursor()
+    c.execute("Select * from user")
+    r =""
+    for row in c:
+        r = r + str(row) + "\n"
+    print(r)
+    c.close()
+    conn.close
+    return(render_template("userLog.html", r = r))
+
+@app.route("/deleteLog", methods = ['POST','GET'])
+def deleteLog():
+    conn = sqlite3.connect('userdb.db')
+    c= conn.cursor()
+    c.execute("Delete from user")
+    conn.commit()
+    c.close()
+    conn.close
+    return(render_template("deleteLog.html"))
     
 
 if __name__=="__main__":
