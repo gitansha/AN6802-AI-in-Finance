@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request
+import sqlite3
+import datetime
+
 app = Flask(__name__)
 
 @app.route("/", methods = ['POST','GET'])
@@ -7,7 +10,14 @@ def index():
 
 @app.route("/main", methods = ['POST','GET'])
 def main():
+    t = time
     user_name= request.form.get("q")
+    conn = sqlite3.connect('userdb.db')
+    c= conn.cursor()
+    conn.execute("insert into user (name,timestamp) values (?,?)",(user_name,t))
+    conn.commit()
+    c.close()
+    conn.close
     return(render_template("main.html"))
 
 @app.route("/foodexp", methods = ['POST','GET'])
@@ -25,6 +35,14 @@ def ethical_test():
 
 @app.route("/test_result", methods = ['POST','GET'])
 def test_result():
+    answer= request.form.get("answer")
+    if answer == "false":
+        return(render_template("pass.html"))
+    elif answer == "true":
+        return(render_template("fail.html"))
+    
+@app.route("/userLog", methods = ['POST','GET'])
+def userLog():
     answer= request.form.get("answer")
     if answer == "false":
         return(render_template("pass.html"))
