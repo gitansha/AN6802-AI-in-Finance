@@ -62,13 +62,23 @@ def faq1():
 
 @app.route("/FAQ2", methods = ['POST','GET'])
 def faq2():
-    ques = request.form.get("response")
+    # ques = request.form.get("response")
     genai.configure(api_key= api)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    answer= model.generate_content("Factors for profit")
+    answer= model.generate_content("Risk Assessment")
     answer = markdown.markdown(answer.text)
     answer = re.sub(r'<.*?>', '', answer)
     return(render_template("FAQ2.html", answer = answer))
+
+@app.route("/FAQ3", methods = ['POST','GET'])
+def faq3():
+    # ques = request.form.get("response")
+    genai.configure(api_key= api)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    answer= model.generate_content("Economic Indicators")
+    answer = markdown.markdown(answer.text)
+    answer = re.sub(r'<.*?>', '', answer)
+    return(render_template("FAQ3.html", answer = answer))
 
 @app.route("/FAQ1input", methods = ['POST','GET'])
 def faq1_wiki():
