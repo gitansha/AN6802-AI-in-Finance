@@ -316,11 +316,9 @@
 
   p {
     margin-bottom: 1.25rem;
-    color: var(--primary-color);
     font-size: 1rem;
     line-height: 1.6;
     max-width: 65ch;
-    text-align: center;
     margin-left: auto;
     margin-right: auto;
 }
@@ -337,6 +335,7 @@
 .lead {
     font-size: 1.125rem;
     color: var(--primary-color);
+    text-align: center;
     font-weight: 400;
 }
 

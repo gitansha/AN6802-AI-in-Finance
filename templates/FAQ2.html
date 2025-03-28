@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = 'stylesheet' href = "{{ url_for('static', filename='styles.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    <div class = "container">
+        <h2> Reply : </h2>
+        <p>{{answer}}</p>
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <form action='/main' method="POST" style="width: 150px; padding: 10px; text-align: center;">
+                <input type="submit" value="Main Menu">
+            </form>
+            <form action='/FAQ' method="POST" style="width: 150px; padding: 10px; text-align: center;">
+                <input type="submit" value="FAQ">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

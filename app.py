@@ -68,7 +68,7 @@ def faq2():
     answer= model.generate_content("Factors for profit")
     answer = markdown.markdown(answer.text)
     answer = re.sub(r'<.*?>', '', answer)
-    return(render_template("FAQ1.html", answer = answer))
+    return(render_template("FAQ2.html", answer = answer))
 
 @app.route("/FAQ1input", methods = ['POST','GET'])
 def faq1_wiki():
