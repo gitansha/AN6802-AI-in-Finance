@@ -5,10 +5,11 @@ import google.generativeai as genai
 import markdown
 import re
 import wikipedia
+import os
 
 app = Flask(__name__)
 flag = True
-api = "AIzaSyCCXOIplLPvb7lvtigD68LNXgRdKUXXjso"
+api = os.getenv("makersuite")
 
 @app.route("/", methods = ['POST','GET'])
 def index():
