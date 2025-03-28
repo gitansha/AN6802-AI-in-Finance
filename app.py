@@ -4,6 +4,7 @@ import datetime
 import google.generativeai as genai
 import markdown
 import re
+import wikipedia
 
 app = Flask(__name__)
 flag = True
@@ -32,6 +33,10 @@ def main():
 def foodexp():
     return(render_template("foodexp.html"))
 
+@app.route("/foodexp2", methods = ['POST','GET'])
+def foodexp2():
+    return(render_template("foodexp2.html"))
+
 @app.route("/foodexp_pred", methods = ['POST','GET'])
 def foodexp_pred():
     q = float(request.form.get("q"))
@@ -54,6 +59,22 @@ def faq1():
     answer = markdown.markdown(answer.text)
     answer = re.sub(r'<.*?>', '', answer)
     return(render_template("FAQ1.html", answer = answer))
+
+@app.route("/FAQ2", methods = ['POST','GET'])
+def faq2():
+    ques = request.form.get("response")
+    genai.configure(api_key= api)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    answer= model.generate_content("Factors for profit")
+    answer = markdown.markdown(answer.text)
+    answer = re.sub(r'<.*?>', '', answer)
+    return(render_template("FAQ1.html", answer = answer))
+
+@app.route("/FAQ1input", methods = ['POST','GET'])
+def faq1_wiki():
+    ques = request.form.get("ques")
+    r = wikipedia.summary(ques)
+    return(render_template("FAQ1input.html", r=r))
 
 @app.route("/test_result", methods = ['POST','GET'])
 def test_result():
@@ -88,4 +109,4 @@ def deleteLog():
     
 
 if __name__=="__main__":
-    app.run()
+    app.run(port=8000)

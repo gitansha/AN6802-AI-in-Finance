@@ -65,6 +65,7 @@
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     margin-bottom: 1rem;
+    text-align: center;
     color: var(--text-primary);
     line-height: 1.2;
   }
@@ -311,4 +312,40 @@
       font-size: 1.35rem;
       margin-bottom: 1.25rem;
     }
+  }
+
+  p {
+    margin-bottom: 1.25rem;
+    color: var(--primary-color);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 65ch;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Optional: Responsive adjustments for paragraphs */
+@media (max-width: 768px) {
+    p {
+        font-size: 0.95rem;
+        max-width: 100%;
+    }
+}
+
+/* Paragraph variants */
+.lead {
+    font-size: 1.125rem;
+    color: var(--primary-color);
+    font-weight: 400;
+}
+
+.small-text {
+    font-size: 0.875rem;
+    color: var(--primary-color);
+}
+
+  .small-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
   }

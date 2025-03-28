@@ -10,22 +10,11 @@
     <div class = "container">
         <h2> Predict Food Expenditure</h2>
         <h4>Please enter your income</h4>
-        <form action="/foodexp_pred" method="POST">
-            <input type="number" name="q" step = 0.01><br><br>
-            <br>
-            <input type="submit" value="Enter">
-        </form>
         <input type = "number" id ="salary" placeholder = "Salary">
         <button class = "btn" onclick  ="predict_food_exp()"> Enter </button>
         <p></p>
         <p class = 'lead' id = "foodexp"></p>
-        <script>
-            function predict_food_exp(){
-                const salary = document.getElementById('salary').value;
-                console.log("salary:"+salary);
-                document.getElementById('foodexp').innerText = 
-                "Predicted Food Exp: $" + ((salary*0.4851)+147.4)
-            }
+        <script src = "{{url_for('static',filename='foodexp.js')}}">          
         </script>
 
         <br>
