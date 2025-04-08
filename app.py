@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import sqlite3
 import datetime
 import google.generativeai as genai
+import time, requests
 import markdown
 import re
 import wikipedia
@@ -11,6 +12,10 @@ app = Flask(__name__)
 flag = True
 api = os.getenv("makersuite")
 api = "AIzaSyCCXOIplLPvb7lvtigD68LNXgRdKUXXjso"
+
+# telegram_api = os.getenv("telegram")
+telegram_api = "8092694123:AAEG4eCfv6xIvWd6AcRUEZQHfC_vZmydi0E"
+url = f"https://api.telegram.org/bot{telegram_api}/"
 
 @app.route("/", methods = ['POST','GET'])
 def index():
@@ -99,6 +104,33 @@ def test_result():
         return(render_template("pass.html"))
     elif answer == "true":
         return(render_template("fail.html"))
+    
+@app.route('/telegram', methods=['GET','POST'])
+def telegram():
+    flag = ""
+    chat_id = "6466874020"
+    prompt = "Please enter the inflation rate in %: (Type exit to break)"
+    err_msg = "Please enter a number"
+    while True:
+        msg = url + f"sendMessage?chat_id={chat_id}&text={prompt}"
+        requests.get(msg)
+        time.sleep(5)
+        response = requests.get(url + 'getUpdates')
+        data = response.json()
+        text = data['result'][-1]['message']['text']
+        if flag != text:
+            flag = text
+            if text.isnumeric():
+                r = "The predicted interest rate is " + str(float(text)+1.5)
+                msg = url + f"sendMessage?chat_id={chat_id}&text={r}"
+                requests.get(msg)
+            else:
+                if text == 'exit':
+                    break
+                else:
+                    msg = url + f"sendMessage?chat_id={chat_id}&text={err_msg}"
+                    requests.get(msg)
+    return(render_template("telegram.html"))
     
 @app.route("/userLog", methods = ['POST','GET'])
 def userLog():
