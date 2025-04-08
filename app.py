@@ -10,6 +10,7 @@ import os
 app = Flask(__name__)
 flag = True
 api = os.getenv("makersuite")
+api = "AIzaSyCCXOIplLPvb7lvtigD68LNXgRdKUXXjso"
 
 @app.route("/", methods = ['POST','GET'])
 def index():
@@ -66,7 +67,7 @@ def faq2():
     # ques = request.form.get("response")
     genai.configure(api_key= api)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    answer= model.generate_content("Risk Assessment")
+    answer= model.generate_content("Risk Assessment in Finance")
     answer = markdown.markdown(answer.text)
     answer = re.sub(r'<.*?>', '', answer)
     return(render_template("FAQ2.html", answer = answer))
@@ -82,10 +83,14 @@ def faq3():
     return(render_template("FAQ3.html", answer = answer))
 
 @app.route("/FAQ1input", methods = ['POST','GET'])
-def faq1_wiki():
+def faq_ques():
     ques = request.form.get("ques")
-    r = wikipedia.summary(ques)
-    return(render_template("FAQ1input.html", r=r))
+    genai.configure(api_key= api)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    answer= model.generate_content(ques)
+    answer = markdown.markdown(answer.text)
+    answer = re.sub(r'<.*?>', '', answer)
+    return(render_template("FAQ1input.html", r=answer))
 
 @app.route("/test_result", methods = ['POST','GET'])
 def test_result():
