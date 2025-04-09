@@ -136,6 +136,7 @@ def run_telegram_bot():
         try:
             msg = url + f"sendMessage?chat_id={chat}&text={prompt}"
             requests.get(msg)
+            time.sleep(5)
             r = requests.get(url + 'getUpdates')
             r = r.json()
             r = r['result'][-1]['message']['text']
