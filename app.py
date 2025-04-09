@@ -9,12 +9,16 @@ import wikipedia
 import os
 
 app = Flask(__name__)
+
 flag = True
-api = os.getenv("makersuite")
+
+# api = os.getenv("makersuite")
 api = "AIzaSyCCXOIplLPvb7lvtigD68LNXgRdKUXXjso"
+model = genai.GenerativeModel("gemini-1.5-flash")
+genai.configure(api_key=api)
 
 # telegram_api = os.getenv("telegram")
-telegram_api = "8092694123:AAEG4eCfv6xIvWd6AcRUEZQHfC_vZmydi0E"
+telegram_api = "7813377233:AAGpGWEeNiXVq0n9VctpoUuKR85wjGAgRUM"
 url = f"https://api.telegram.org/bot{telegram_api}/"
 
 @app.route("/", methods = ['POST','GET'])
@@ -104,33 +108,61 @@ def test_result():
         return(render_template("pass.html"))
     elif answer == "true":
         return(render_template("fail.html"))
-    
-@app.route('/telegram', methods=['GET','POST'])
+
+@app.route("/telegram", methods = ['POST','GET'])
 def telegram():
+    return(render_template("telegram.html"))
+
+def predict_default(salary):
+    prompt = f"A person with a salary of ${salary} is likely to:"
+    response = model.generate_content(prompt)
+    return response.candidates[0].content.parts[0]
+  
+@app.route('/starttelegram', methods=['GET','POST'])
+def starttelegram():
     flag = ""
-    chat_id = "6466874020"
-    prompt = "Please enter the inflation rate in %: (Type exit to break)"
-    err_msg = "Please enter a number"
+    prompt = "Please enter your salary and Gemini will judge it: (Type 'break' to exit)"
     while True:
-        msg = url + f"sendMessage?chat_id={chat_id}&text={prompt}"
+        msg = url + f"sendMessage?chat_id=7494700360&text={prompt}"
         requests.get(msg)
-        time.sleep(5)
-        response = requests.get(url + 'getUpdates')
-        data = response.json()
-        text = data['result'][-1]['message']['text']
-        if flag != text:
-            flag = text
-            if text.isnumeric():
-                r = "The predicted interest rate is " + str(float(text)+1.5)
-                msg = url + f"sendMessage?chat_id={chat_id}&text={r}"
+        r = requests.get(url + 'getUpdates')
+        r = r.json()
+        r = r['result'][-1]['message']['text']
+        if r == "break":
+            break
+        if flag != r:
+            flag = r
+            if r.isnumeric():
+                # Make prediction
+                prediction = predict_default(r)
+                cleaned_text = f"{prediction}".replace('**', '')
+
+                # Remove the word "text:" at the beginning, if it exists
+                text = re.sub(r'^text:\s*', '', cleaned_text)
+
+                # Remove bullet points (* ) at the beginning of lines
+                text = re.sub(r'^\s*\*\s+', '', text, flags=re.MULTILINE)
+
+                # Remove extra newlines and replace them with spaces
+                text = text.replace('\\n', ' ').replace("\\n\n", "").replace("\n\n\n", "")
+
+                # Remove surrounding quotes (if any)
+                text = text.strip('"')
+
+                # Remove any remaining asterisks (*)
+                text = text.replace('*', '')
+
+                # Remove extra spaces caused by replacements
+                text = ' '.join(text.split())
+
+                # Print prediction
+                msg = url + f"sendMessage?chat_id=7494700360&text={text}"
                 requests.get(msg)
             else:
-                if text == 'exit':
-                    break
-                else:
-                    msg = url + f"sendMessage?chat_id={chat_id}&text={err_msg}"
-                    requests.get(msg)
-    return(render_template("telegram.html"))
+                msg = url + f"sendMessage?chat_id=7494700360&text={r} is not a number"
+                requests.get(msg)
+        time.sleep(8)           
+    return(render_template("main.html"))
     
 @app.route("/userLog", methods = ['POST','GET'])
 def userLog():
@@ -157,4 +189,4 @@ def deleteLog():
     
 
 if __name__=="__main__":
-    app.run(port=8000)
+    app.run(port=8000, debug=True)
